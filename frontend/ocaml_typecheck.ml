@@ -1,6 +1,7 @@
 open Ocaml_common
 
 let initial_env () =
+  let () = Compmisc.init_path () in
   let open_implicit_modules = [] in
   Typemod.initial_env
     ~loc:(Location.in_file "ocamldoc command line")
