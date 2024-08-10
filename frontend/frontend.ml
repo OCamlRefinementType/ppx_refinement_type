@@ -31,6 +31,13 @@ let item_is_rty item =
   | Pstr_value (_, _) -> false
   | _ -> false
 
+let item_is_origin item =
+  match item.pstr_desc with
+  | Pstr_value (_, [ value_binding ]) ->
+      not (List.exists attr_is_rty value_binding.pvb_attributes)
+  | Pstr_primitive _ -> false
+  | _ -> true
+
 let rec parse_rty expr =
   match expr.pexp_desc with
   | Pexp_let (_, bindings, ret_rty) ->
@@ -65,6 +72,7 @@ let get_impl_from_typed_items name implementation =
     implementation.structure.str_items
 
 let impl struc =
+  let res = List.filter item_is_origin struc in
   let rtys, struc = List.partition item_is_rty struc in
   let rtys_ctx =
     List.filter_map
@@ -91,7 +99,7 @@ let impl struc =
               (layout_rty rty))
       rtys_ctx
   in
-  struc
+  res
 
 let intf intf = intf
 let () = Driver.register_transformation ~impl ~intf "refinement type"
