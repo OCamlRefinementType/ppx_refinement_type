@@ -1,0 +1,8 @@
+(library
+ (public_name ppx_refinement_type.frontend)
+ (name frontend)
+ (wrapped true)
+ (kind ppx_rewriter)
+ (libraries ppxlib compiler-libs)
+ (modules frontend)
+)
