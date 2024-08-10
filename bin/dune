@@ -1,0 +1,4 @@
+(executable
+ (public_name ppx_refinement_type)
+ (name main)
+ (libraries ppx_refinement_type))
