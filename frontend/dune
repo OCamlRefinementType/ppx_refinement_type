@@ -3,6 +3,8 @@
  (name frontend)
  (wrapped true)
  (kind ppx_rewriter)
- (libraries ppxlib compiler-libs)
- (modules frontend)
+ (libraries ppxlib compiler-libs.common)
+ (modules
+   ocaml_typecheck
+   frontend)
 )

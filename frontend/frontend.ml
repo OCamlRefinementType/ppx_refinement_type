@@ -49,6 +49,21 @@ let rec parse_rty expr =
 let parse_rty_binding value_binding =
   (value_binding.pvb_pat, parse_rty value_binding.pvb_expr)
 
+let get_impl_from_typed_items name implementation =
+  let open Ocaml_common.Typedtree in
+  List.find_map
+    (fun str ->
+      match str.str_desc with
+      | Tstr_value (_, [ value_binding ]) ->
+          let pat =
+            Ocaml_common.Untypeast.untype_pattern value_binding.vb_pat
+          in
+          if String.equal (string_of_pattern pat) (string_of_pattern name) then
+            Some value_binding.vb_expr
+          else None
+      | _ -> None)
+    implementation.structure.str_items
+
 let impl struc =
   let rtys, struc = List.partition item_is_rty struc in
   let rtys_ctx =
@@ -60,10 +75,20 @@ let impl struc =
         | _ -> None)
       rtys
   in
+  let implementation = Ocaml_typecheck.process_implementation_file struc in
   let () =
     List.iter
       (fun (name, rty) ->
-        Printf.printf "%s : %s\n" (string_of_pattern name) (layout_rty rty))
+        match get_impl_from_typed_items name implementation with
+        | None ->
+            Printf.printf "cannot find the implementation of function %s\n"
+              (string_of_pattern name)
+        | Some impl ->
+            Printf.printf "Type judgement [%s]\n|-\n%s\n: %s\n"
+              (string_of_pattern name)
+              (Pprintast.string_of_expression
+              @@ Ocaml_common.Untypeast.untype_expression impl)
+              (layout_rty rty))
       rtys_ctx
   in
   struc
