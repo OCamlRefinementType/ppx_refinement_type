@@ -4,7 +4,7 @@ let initial_env () =
   let open_implicit_modules = [] in
   Typemod.initial_env
     ~loc:(Location.in_file "ocamldoc command line")
-    ~open_implicit_modules ~initially_opened_module:(Some "Stdlib")
+    ~open_implicit_modules ~initially_opened_module:(Some "Pervasives")
     ~safe_string:true
 
 let process_implementation_file parsetree =
