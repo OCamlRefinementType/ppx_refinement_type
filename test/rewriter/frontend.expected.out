@@ -1,0 +1,4 @@
+Type judgement [foo]
+|-
+fun x -> x + 2
+: x:{v:int | true} -> {v:int | v > 3}
