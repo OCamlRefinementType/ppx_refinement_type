@@ -2,11 +2,13 @@ open Ocaml_common
 
 let initial_env () =
   let () = Compmisc.init_path () in
+  let initially_opened_module =
+    if !Clflags.nopervasives then None else Some "Stdlib"
+  in
   let open_implicit_modules = [] in
   Typemod.initial_env
     ~loc:(Location.in_file "ocamldoc command line")
-    ~open_implicit_modules ~initially_opened_module:(Some "Stdlib")
-    ~safe_string:true
+    ~open_implicit_modules ~initially_opened_module ~safe_string:true
 
 let process_implementation_file parsetree =
   let env = initial_env () in
